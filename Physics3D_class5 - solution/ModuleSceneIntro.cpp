@@ -74,14 +74,25 @@ update_status ModuleSceneIntro::Update(float dt)
 	platform3_2.SetPos(-15.0f, 5.0f, 112.5f);
 	platform4.SetPos(-55.0f, 5.0f, 55.0f);
 
+	//------------------quicksand------------------
+	Cube quicksand1(70.0f, 10.0f, 5.0f);
+	Cube quicksand2(70.0f, 10.0f, 5.0f);
+	quicksand1.color = { 255.0f, 255.0f, 0.0f };
+	quicksand2.color = { 255.0f, 255.0f, 0.0f };
+
+	//------------------quicksand pos------------------
+	quicksand1.SetPos(15.0f, 5.0f, 112.5f);
+	quicksand2.SetPos(-15.0f, 5.0f, 107.5f);
+
 	//------------------Render---------------------
 	platform.Render();
 	platform2.Render();
 	platform4.Render();
 	platform3_1.Render();
 	platform3_2.Render();
-
-
+	quicksand1.Render();
+	quicksand2.Render();
+	
 	return UPDATE_CONTINUE;
 }
 
