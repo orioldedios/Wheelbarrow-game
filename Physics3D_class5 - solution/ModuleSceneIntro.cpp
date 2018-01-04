@@ -33,7 +33,7 @@ bool ModuleSceneIntro::Start()
 	platform4.SetPos(-55.0f, 5.0f, 55.0f);
 
 	//-------------------Balls----------------------
-	ball_1.radius = ball_2.radius = 10;
+	ball_1.radius = ball_2.radius = 15;
 
 	App->physics->AddBody(platform1,2000.0f);
 	App->physics->AddBody(platform2, 2000.0f);
@@ -112,12 +112,15 @@ update_status ModuleSceneIntro::Update(float dt)
 	}
 	if (right)
 	{
-		i -= 1.0f;
+		i -= 5.0f;
 	}
 	else if (left)
 	{
-		i += 1.0f;
+		i += 5.0f;
 	}
+
+	ball_1.color = { 100,100,25 };
+	ball_2.color = {0,0,0};
 	ball_1.Render();
 	ball_2.Render();
 
