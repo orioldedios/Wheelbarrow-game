@@ -333,6 +333,17 @@ PhysVehicle3D* ModulePhysics3D::AddVehicle(const VehicleInfo& info)
 	return pvehicle;
 }
 
+
+void ModulePhysics3D::ClearVehicle()
+{
+	p2List_item<PhysVehicle3D*>* it;
+	for (it = vehicles.getFirst(); it != nullptr; it = it->next)
+	{
+		delete it->data;
+	}
+	vehicles.clear();
+}
+
 // ---------------------------------------------------------
 void ModulePhysics3D::AddConstraintP2P(PhysBody3D& bodyA, PhysBody3D& bodyB, const vec3& anchorA, const vec3& anchorB)
 {

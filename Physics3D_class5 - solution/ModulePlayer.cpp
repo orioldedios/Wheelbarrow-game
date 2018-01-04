@@ -18,6 +18,15 @@ bool ModulePlayer::Start()
 {
 	LOG("Loading player");
 
+	CreateCar();
+
+	vehicle->GetTransform(original_transform);
+	
+	return true;
+}
+
+void ModulePlayer::CreateCar()
+{
 	VehicleInfo car;
 
 	// Car properties ----------------------------------------
@@ -41,11 +50,11 @@ bool ModulePlayer::Start()
 
 	float half_width = car.chassis_size.x*0.5f;
 	float half_length = car.chassis_size.z*0.5f;
-	
-	vec3 direction(0,-1,0);
-	vec3 axis(-1,0,0);
-	
-	car.num_wheels = 3;
+
+	vec3 direction(0, -1, 0);
+	vec3 axis(-1, 0, 0);
+
+	car.num_wheels = 4;
 	car.wheels = new Wheel[4];
 
 	// FRONT-LEFT ------------------------
@@ -56,9 +65,9 @@ bool ModulePlayer::Start()
 	car.wheels[0].radius = wheel_radius;
 	car.wheels[0].width = wheel_width;
 	car.wheels[0].front = true;
-	car.wheels[0].drive = false;
+	car.wheels[0].drive = true;
 	car.wheels[0].brake = false;
-	car.wheels[0].steering = false;
+	car.wheels[0].steering = true;
 
 	// FRONT-RIGHT ------------------------
 	car.wheels[1].connection.Set(-half_width + 0.3f * wheel_width, connection_height, half_length - wheel_radius);
@@ -68,41 +77,37 @@ bool ModulePlayer::Start()
 	car.wheels[1].radius = wheel_radius;
 	car.wheels[1].width = wheel_width;
 	car.wheels[1].front = true;
-	car.wheels[1].drive = false;
+	car.wheels[1].drive = true;
 	car.wheels[1].brake = false;
-	car.wheels[1].steering = false;
+	car.wheels[1].steering = true;
 
 	// REAR-LEFT ------------------------
-
-	//wheel_radius = 0.1f;
-
-	car.wheels[2].connection.Set(half_width - 2*wheel_width, connection_height, -half_length + wheel_radius);
+	car.wheels[2].connection.Set(half_width - 0.3f * wheel_width, connection_height, -half_length + wheel_radius);
 	car.wheels[2].direction = direction;
 	car.wheels[2].axis = axis;
 	car.wheels[2].suspensionRestLength = suspensionRestLength;
 	car.wheels[2].radius = wheel_radius;
 	car.wheels[2].width = wheel_width;
 	car.wheels[2].front = false;
-	car.wheels[2].drive = true;
+	car.wheels[2].drive = false;
 	car.wheels[2].brake = true;
-	car.wheels[2].steering = true;
+	car.wheels[2].steering = false;
 
 	// REAR-RIGHT ------------------------
-	//car.wheels[3].connection.Set(-half_width + 0.3f * wheel_width, connection_height, -half_length + wheel_radius);
-	//car.wheels[3].direction = direction;
-	//car.wheels[3].axis = axis;
-	//car.wheels[3].suspensionRestLength = suspensionRestLength;
-	//car.wheels[3].radius = wheel_radius;
-	//car.wheels[3].width = wheel_width;
-	//car.wheels[3].front = false;
-	//car.wheels[3].drive = false;
-	//car.wheels[3].brake = true;
-	//car.wheels[3].steering = false;
+	car.wheels[3].connection.Set(-half_width + 0.3f * wheel_width, connection_height, -half_length + wheel_radius);
+	car.wheels[3].direction = direction;
+	car.wheels[3].axis = axis;
+	car.wheels[3].suspensionRestLength = suspensionRestLength;
+	car.wheels[3].radius = wheel_radius;
+	car.wheels[3].width = wheel_width;
+	car.wheels[3].front = false;
+	car.wheels[3].drive = false;
+	car.wheels[3].brake = true;
+	car.wheels[3].steering = false;
 
+	App->physics->ClearVehicle();
 	vehicle = App->physics->AddVehicle(car);
-	vehicle->SetPos(45.0f,10.0f,0.0f);
-	
-	return true;
+	vehicle->SetPos(45.0f, 10.0f, 0.0f);
 }
 
 // Unload assets
@@ -120,7 +125,10 @@ update_status ModulePlayer::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
-		acceleration = MAX_ACCELERATION;
+		if (vehicle->GetKmh() <= 0)
+			brake = BRAKE_POWER;
+		else 
+			acceleration = MAX_ACCELERATION;
 	}
 
 	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
@@ -137,12 +145,17 @@ update_status ModulePlayer::Update(float dt)
 
 	if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 	{
-		brake = BRAKE_POWER;
+		if (vehicle->GetKmh() >= 0)
+			brake = BRAKE_POWER;
+		else 
+			acceleration = -MAX_ACCELERATION;
 	}
 
 	vehicle->ApplyEngineForce(acceleration);
 	vehicle->Turn(turn);
 	vehicle->Brake(brake);
+
+	vehicle->GetTransform(transform);
 
 	vehicle->Render();
 
@@ -153,5 +166,12 @@ update_status ModulePlayer::Update(float dt)
 	return UPDATE_CONTINUE;
 }
 
+update_status ModulePlayer::PostUpdate(float dt)
+{
+	if (transform[13] < 5.0f)
+	{
+		vehicle->SetTransform(original_transform);
+	}
 
-
+	return UPDATE_CONTINUE;
+}

@@ -41,6 +41,11 @@ bool ModuleSceneIntro::Start()
 	App->physics->AddBody(platform3_2, 2000.0f);
 	App->physics->AddBody(platform4, 2000.0f);
 
+	PhysBody3D* sens = App->physics->AddBody({ 5, 3, 1 }, 0.0);
+
+	sens->SetAsSensor(true);
+
+	sens->collision_listeners.add(this);
 
 	App->camera->Move(vec3(45.0f, 20.0f, -20.0f));
 	App->camera->LookAt(vec3(40, 0, 40));
@@ -129,5 +134,8 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
+	
+
+
 }
 

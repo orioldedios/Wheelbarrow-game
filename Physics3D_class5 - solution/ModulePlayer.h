@@ -17,10 +17,14 @@ public:
 
 	bool Start();
 	update_status Update(float dt);
+	update_status PostUpdate(float dt);
+	void CreateCar();
 	bool CleanUp();
 
 public:
 
+	float* transform = new float[20];
+	float* original_transform = new float[20];
 	PhysVehicle3D* vehicle;
 	float turn;
 	float acceleration;
