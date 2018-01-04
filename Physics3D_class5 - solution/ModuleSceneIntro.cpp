@@ -32,6 +32,9 @@ bool ModuleSceneIntro::Start()
 	platform3_2.SetPos(-15.0f, 5.0f, 112.5f);
 	platform4.SetPos(-55.0f, 5.0f, 55.0f);
 
+	//-------------------Balls----------------------
+	ball_1.radius = ball_2.radius = 10;
+
 	App->physics->AddBody(platform1,2000.0f);
 	App->physics->AddBody(platform2, 2000.0f);
 	App->physics->AddBody(platform3_1, 2000.0f);
@@ -92,7 +95,32 @@ update_status ModuleSceneIntro::Update(float dt)
 	platform3_2.Render();
 	quicksand1.Render();
 	quicksand2.Render();
-	
+
+	//-------------------Balls----------------------
+	ball_1.SetPos(0.0f + i, 20.0f, 80.0f);
+	ball_2.SetPos(0.0f - i, 20.0f, 40.0f);
+
+	if (i == 70.0f && !right)
+	{
+		right = true;
+		left = false;
+	}
+	if (i == -70.0f && !left)
+	{
+		right = false;
+		left = true;
+	}
+	if (right)
+	{
+		i -= 1.0f;
+	}
+	else if (left)
+	{
+		i += 1.0f;
+	}
+	ball_1.Render();
+	ball_2.Render();
+
 	return UPDATE_CONTINUE;
 }
 

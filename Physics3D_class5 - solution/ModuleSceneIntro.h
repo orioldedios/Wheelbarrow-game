@@ -24,4 +24,10 @@ public:
 
 public:
 
+	Sphere ball_1;
+	Sphere ball_2;
+
+	int i=0.0f;
+	bool left = true, right = false;
+
 };
