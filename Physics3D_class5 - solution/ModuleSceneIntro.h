@@ -9,6 +9,7 @@
 struct PhysBody3D;
 struct PhysMotor3D;
 
+
 class ModuleSceneIntro : public Module
 {
 public:
@@ -22,9 +23,5 @@ public:
 	void OnCollision(PhysBody3D* body1, PhysBody3D* body2);
 
 public:
-
-	PhysBody3D* platform[MAX_SNAKE];
-	Sphere s_platform[MAX_SNAKE];
-
 
 };
