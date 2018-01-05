@@ -17,6 +17,35 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	s.size = vec3(5, 3, 1);
+	s.SetPos(45.0f, 12.5f, 10.0f);
+
+	sensor1 = App->physics->AddBody(s, 0.0f);
+	sensor1->SetAsSensor(true);
+	sensor1->collision_listeners.add(this);
+
+	s.size = vec3(1, 3, 5);
+	s.SetPos(40.0f, 12.5f, 110.0f);
+
+	sensor2 = App->physics->AddBody(s, 0.0f);
+	sensor2->SetAsSensor(true);
+	sensor2->collision_listeners.add(this);
+
+	s.size = vec3(5, 3, 1);
+	s.SetPos(-55.0f, 12.5f, 100.0f);
+
+	sensor3 = App->physics->AddBody(s, 0.0f);
+	sensor3->SetAsSensor(true);
+	sensor3->collision_listeners.add(this);
+
+	s.size = vec3(1, 3, 5);
+	s.SetPos(-45.0f, 12.5f, 0.0f);
+
+	sensor4 = App->physics->AddBody(s, 0.0f);
+	sensor4->SetAsSensor(true);
+	sensor4->collision_listeners.add(this);
+
+
 
 	//--------------------floor platforms-----------
 	Cube platform1(100.0f, 10.0f, 10.0f);
@@ -41,12 +70,6 @@ bool ModuleSceneIntro::Start()
 	App->physics->AddBody(platform3_2, 2000.0f);
 	App->physics->AddBody(platform4, 2000.0f);
 
-	PhysBody3D* sens = App->physics->AddBody({ 5, 3, 1 }, 0.0);
-
-	sens->SetAsSensor(true);
-
-	sens->collision_listeners.add(this);
-
 	App->camera->Move(vec3(45.0f, 20.0f, -20.0f));
 	App->camera->LookAt(vec3(40, 0, 40));
 
@@ -67,6 +90,20 @@ update_status ModuleSceneIntro::Update(float dt)
 	Plane p(0, 1, 0, 0);
 	p.axis = true;
 	p.Render();
+
+	if (sens1 && sens2 && sens3 && sens4)
+	{
+		win = true;
+	}
+
+	if (win)
+	{
+		
+	}
+
+	//sensor1->GetTransform(&s.transform);
+
+	//s.Render();
 
 	//--------------------floor platforms-----------
 	Cube platform(100.0f, 10.0f, 10.0f);
@@ -134,8 +171,24 @@ update_status ModuleSceneIntro::Update(float dt)
 
 void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 {
-	
-
-
+	if (body2 == (PhysBody3D*)App->player->vehicle)
+	{
+		if (body1 == sensor1)
+		{
+			sens1 = true;
+		}
+		else if (body1 == sensor2)
+		{
+			sens2 = true;
+		}
+		else if (body1 == sensor3)
+		{
+			sens3 = true;
+		}
+		else if (body1 == sensor4)
+		{
+			sens4 = true;
+		}
+	}
 }
 

@@ -66,7 +66,6 @@ bool ModulePhysics3D::Start()
 		world->addRigidBody(body);
 	}
 
-	
 	return true;
 }
 
@@ -91,14 +90,14 @@ update_status ModulePhysics3D::PreUpdate(float dt)
 			if(pbodyA && pbodyB)
 			{
 				p2List_item<Module*>* item = pbodyA->collision_listeners.getFirst();
-				while(item)
+				while (item)
 				{
 					item->data->OnCollision(pbodyA, pbodyB);
 					item = item->next;
 				}
 
 				item = pbodyB->collision_listeners.getFirst();
-				while(item)
+				while (item)
 				{
 					item->data->OnCollision(pbodyB, pbodyA);
 					item = item->next;
