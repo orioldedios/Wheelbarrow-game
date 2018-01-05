@@ -45,6 +45,13 @@ bool ModuleSceneIntro::Start()
 	sensor4->SetAsSensor(true);
 	sensor4->collision_listeners.add(this);
 
+	s.size = vec3(1, 3, 5);
+	s.SetPos(40.0f, 12.5f, 0.0f);
+
+	sensor5 = App->physics->AddBody(s, 0.0f);
+	sensor5->SetAsSensor(true);
+	sensor5->collision_listeners.add(this);
+
 
 
 	//--------------------floor platforms-----------
@@ -91,7 +98,7 @@ update_status ModuleSceneIntro::Update(float dt)
 	p.axis = true;
 	p.Render();
 
-	if (sens1 && sens2 && sens3 && sens4)
+	if (sens1 && sens2 && sens3 && sens4 && sens5)
 	{
 		win = true;
 	}
@@ -188,6 +195,10 @@ void ModuleSceneIntro::OnCollision(PhysBody3D* body1, PhysBody3D* body2)
 		else if (body1 == sensor4)
 		{
 			sens4 = true;
+		}
+		else if (body1 == sensor5)
+		{
+			sens5 = true;
 		}
 	}
 }

@@ -30,11 +30,14 @@ public:
 	PhysBody3D* sensor2 = nullptr;
 	PhysBody3D* sensor3 = nullptr;
 	PhysBody3D* sensor4 = nullptr;
+	PhysBody3D* sensor5 = nullptr;
 
 	bool sens1 = false;
 	bool sens2 = false;
 	bool sens3 = false;
 	bool sens4 = false;
+	bool sens5 = false;
+
 	bool win = false;
 
 	Sphere ball_1;
