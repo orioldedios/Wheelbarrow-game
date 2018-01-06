@@ -2,6 +2,8 @@
 #include "Application.h"
 #include "PhysBody3D.h"
 #include "ModuleCamera3D.h"
+#include "PhysVehicle3D.h"
+#include "ModulePlayer.h"
 
 ModuleCamera3D::ModuleCamera3D(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -38,10 +40,36 @@ bool ModuleCamera3D::CleanUp()
 // -----------------------------------------------------------------
 update_status ModuleCamera3D::Update(float dt)
 {
-	// Implement a debug camera with keys and mouse
-	// Now we can make this movememnt frame rate independant!
 
-	vec3 newPos(0,0,0);
+	mat4x4 m;
+
+	follow->GetTransform(&m);
+
+	Look(Position, m.translation(), true);
+
+	if (m.translation().y < 2.5)
+		Position.y = 8;
+	else if (m.translation().y > 2.5 && (m.translation().y < 9.5))
+		Position.y = 7.2;
+	else if (m.translation().y > 2.5 && (m.translation().y < 14.5))
+		Position.y = 14;
+	else
+		Position.y = 20;
+
+	vec3 cam_to_target = m.translation() - Position;
+	float dist = length(cam_to_target);
+	float correct = 0.f;
+	if (dist < min_dist)
+	{
+		correct = 0.15*(min_dist - dist) / dist;
+	}
+	if (dist > max_dist)
+	{
+		correct = 0.15*(max_dist - dist) / dist;
+	}
+	Position -= correct * cam_to_target;
+
+	/*vec3 newPos(0,0,0);
 	float speed = 3.0f * dt;
 	if(App->input->GetKey(SDL_SCANCODE_LSHIFT) == KEY_REPEAT)
 		speed = 8.0f * dt;
@@ -57,7 +85,7 @@ update_status ModuleCamera3D::Update(float dt)
 	if(App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT) newPos += X * speed;
 
 	Position += newPos;
-	Reference += newPos;
+	Reference += newPos;*/
 
 	// Mouse motion ----------------
 
@@ -122,7 +150,7 @@ void ModuleCamera3D::Look(const vec3 &Position, const vec3 &Reference, bool Rota
 }
 
 // -----------------------------------------------------------------
-void ModuleCamera3D::LookAt( const vec3 &Spot)
+void ModuleCamera3D::LookAt(const vec3 &Spot)
 {
 	Reference = Spot;
 
@@ -154,4 +182,12 @@ void ModuleCamera3D::CalculateViewMatrix()
 {
 	ViewMatrix = mat4x4(X.x, Y.x, Z.x, 0.0f, X.y, Y.y, Z.y, 0.0f, X.z, Y.z, Z.z, 0.0f, -dot(X, Position), -dot(Y, Position), -dot(Z, Position), 1.0f);
 	ViewMatrixInverse = inverse(ViewMatrix);
+}
+
+void ModuleCamera3D::Follow(PhysBody3D* body, float min, float max, float h)
+{
+	min_dist = min;
+	max_dist = max;
+	height = h;
+	follow = body;
 }

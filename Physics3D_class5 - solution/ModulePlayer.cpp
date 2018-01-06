@@ -108,6 +108,9 @@ void ModulePlayer::CreateCar()
 	App->physics->ClearVehicle();
 	vehicle = App->physics->AddVehicle(car);
 	vehicle->SetPos(45.0f, 10.0f, 0.0f);
+
+	App->camera->Follow(vehicle, 10, 10, 1.f);
+
 }
 
 // Unload assets
@@ -160,8 +163,14 @@ update_status ModulePlayer::Update(float dt)
 	vehicle->Render();
 
 	char title[80];
-	sprintf_s(title, "%.1f Km/h", vehicle->GetKmh());
+	sprintf_s(title, "%.1f Km/h\t     TOTAL LAPS: %i\t     DEATHS: %i", vehicle->GetKmh(), App->scene_intro->lap_count, death_count);
 	App->window->SetTitle(title);
+
+	vehicle->GetTransform(&matrix);
+	position = matrix.translation();
+	cameraPos = position;
+	cameraPos.y += vehicle->info.chassis_size.y + 2;
+	cameraPos.z += -vehicle->info.chassis_size.z - 10;
 
 	return UPDATE_CONTINUE;
 }
@@ -170,7 +179,12 @@ update_status ModulePlayer::PostUpdate(float dt)
 {
 	if (transform[13] < 5.0f)
 	{
+		++death_count;
 		vehicle->SetTransform(original_transform);
+		if (vehicle->GetKmh() > 0)
+			brake = BRAKE_POWER;
+		else if (vehicle->GetKmh() < 0)
+			brake = BRAKE_POWER;
 	}
 
 	return UPDATE_CONTINUE;

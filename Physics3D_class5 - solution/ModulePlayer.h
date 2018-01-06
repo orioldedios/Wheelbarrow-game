@@ -29,4 +29,10 @@ public:
 	float turn;
 	float acceleration;
 	float brake;
+
+	int death_count = 0;
+
+	mat4x4 matrix;
+	vec3 position;
+	vec3 cameraPos;
 };

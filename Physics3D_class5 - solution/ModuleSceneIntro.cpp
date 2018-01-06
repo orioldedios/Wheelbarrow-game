@@ -17,6 +17,9 @@ bool ModuleSceneIntro::Start()
 	LOG("Loading Intro assets");
 	bool ret = true;
 
+	App->camera->Move(vec3(1.0f, 1.0f, 0.0f));
+	App->camera->LookAt(vec3(0, 0, 0));
+
 	s.size = vec3(5, 3, 1);
 	s.SetPos(45.0f, 12.5f, 10.0f);
 
@@ -100,12 +103,14 @@ update_status ModuleSceneIntro::Update(float dt)
 
 	if (sens1 && sens2 && sens3 && sens4 && sens5)
 	{
-		win = true;
+		lap = true;
 	}
 
-	if (win)
+	if (lap)
 	{
-		
+		lap = false;
+		sens1 = sens2 = sens3 = sens4 = sens5 = false;
+		++lap_count;
 	}
 
 	//sensor1->GetTransform(&s.transform);

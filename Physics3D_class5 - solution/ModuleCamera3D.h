@@ -18,6 +18,8 @@ public:
 	void Move(const vec3 &Movement);
 	float* GetViewMatrix();
 
+	void Follow(PhysBody3D* body, float min, float max, float h);
+
 private:
 
 	void CalculateViewMatrix();
@@ -29,4 +31,9 @@ public:
 private:
 
 	mat4x4 ViewMatrix, ViewMatrixInverse;
+
+	PhysBody3D* follow;
+	float min_dist;
+	float max_dist;
+	float height;
 };

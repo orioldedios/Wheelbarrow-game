@@ -38,7 +38,9 @@ public:
 	bool sens4 = false;
 	bool sens5 = false;
 
-	bool win = false;
+	bool lap = false;
+
+	int lap_count = 0;
 
 	Sphere ball_1;
 	Sphere ball_2;
